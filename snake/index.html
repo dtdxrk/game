@@ -1,0 +1,261 @@
+﻿<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>贪吃蛇JavaScript版</title>
+<style type="text/css">
+*{margin:0;padding: 0;line-height: 1;}
+body{font-family: Arial, 'Microsoft Yahei', Simsun, sans-serif;background-color: #7bef70;}
+#con{width:400px;margin: 20px auto;}
+    #con span.r{float: right;}
+    #con h1{text-align: center;}
+    #Canvas{margin: 20px auto;background-color: #f4f9f5;overflow: hidden;}
+    #Canvas table{width: 100%;border:2px solid #000;border-collapse: collapse;}
+    #Canvas table td{border-collapse: collapse;border:1px solid #bfcde9;width: 8px;height: 8px;}
+    #Canvas table td.SnakeBody{background-color: #82f170}
+    #Canvas table td.SnakeHead{background-color: #4ca72e;}
+    #Canvas table td.Mouse{background-color: red;}
+    /*#Canvas table td.SnakeBody, #Canvas table td.SnakeHead, #Canvas table td.Mouse{border:1px solid #000;*border:0;}*/
+</style>
+</head>
+<body>
+    <div id="con">
+        <h1>贪吃蛇JavaScript版</h1>
+        <div id="Canvas">
+        </div>
+
+        <div>
+            <span>分数：<i id="integral">0</i></span>
+            <span class="r">速度：<i id="speed">200</i></span>
+        </div>
+    </div>
+
+<script type="text/javascript">
+var Snake = {
+    time : "",
+    mapX : 40,
+    mapY : 40,
+    speed : 200,
+    mousePos : {},  //老鼠坐标
+    snakeStartPos : {"x":10,"y":20},  //蛇起始位置
+    snakeDirection : "Right",   //起始方向
+    snakeLen : 5,   //长度
+    snakeArr : [],  //蛇身体的坐标
+    pointArr : [],  //转点数组
+    $ : function(id){
+        return document.getElementById(id);
+    },
+    init : function(){
+        this.CreateMap();
+        this.CreateSnake();
+        this.CreateMouse();
+        document.onkeydown = this.keyDirection;
+        this.timer = setInterval(this.MoveSnake, this.speed);
+    },
+    CreateMap : function(){    //创建画布
+        var x = this.mapX,
+            y = this.mapY,
+            html = ["<table>"];
+        for(var i=0; i<y; i++){
+            html.push("<tr>");
+            for(var j=0; j<x; j++){
+                html.push("<td id='map_"+j+"_"+i+"'></td>");
+            }
+            html.push("</tr>");
+        }
+        html.push("</table>");
+        this.$("Canvas").innerHTML = html.join("");
+    },
+    CreateMouse : function(){    //创建老鼠
+        var x,y,id,
+            that = this,
+            getMouse = function(){
+                for(var i in that.snakeArr){
+                    if(x==that.snakeArr[i]["x"] && y==that.snakeArr[i]["y"]){   //如果坐标与snake身体重叠重置
+                        return random();
+                    }
+                }
+                that.mousePos.x = x;
+                that.mousePos.y = y;
+                that.$("map_"+x+"_"+y).className = "Mouse";
+            },
+            random = function(){
+                x = Math.floor(Math.random()*(that.mapX-1));
+                y = Math.floor(Math.random()*(that.mapY-1));
+                getMouse();
+            };
+           
+        random();
+    },
+    CreateSnake : function(){
+        var $ = this.$,
+            snakeArr = this.snakeArr,
+            snakeLen = this.snakeLen,
+            posX = this.snakeStartPos.x,
+            posY = this.snakeStartPos.y,
+            n = snakeLen + posX;
+        for(var i = posX; i<n; i++){
+            if(i==n-1){
+                $("map_"+i+"_"+posY).className  = "SnakeHead";
+            }else{
+                $("map_"+i+"_"+posY).className  = "SnakeBody";
+            }
+            snakeLen--;
+            snakeArr[snakeLen] = [];
+            snakeArr[snakeLen]["x"] = i;
+            snakeArr[snakeLen]["y"] = posY;
+            snakeArr[snakeLen]["d"] = this.snakeDirection;
+        }
+    },
+    MoveSnake : function(){
+        var body,
+            _d,
+            snakeLen = Snake.snakeLen,
+            snakeArr = Snake.snakeArr;
+
+        Snake.$('map_'+snakeArr[snakeLen-1]['x']+'_'+snakeArr[snakeLen-1]['y']).className  = ""; //蛇尾去除css样式
+        for(var i=0,len =snakeLen; i<len; i++){
+            body = snakeArr[i];
+            if(i==0) {
+                Snake.$("map_"+body['x']+"_"+body['y']).className  = "SnakeBody";
+            }
+            _d = Snake.getPoint(body['x'],body['y']);
+            if(_d) body['d'] = _d;  //获取转点改变蛇的方向
+
+            //bug 删除转点的时候蛇尾没有转过来
+            if(i==snakeLen-1 && Snake.pointArr.length>0) Snake.delPoint(body['x'],body['y']); //删除转点
+
+            switch(body['d']){
+                case "Left":
+                    if(i==0)Snake.GameOver(body['x']-1,body['y']), Snake.eatMouse(body['x']-1,body['y']);
+                    body['x']--;
+                    break;
+                case "Up":
+                    if(i==0)Snake.GameOver(body['x'],body['y']-1), Snake.eatMouse(body['x'],body['y']-1);
+                    body['y']--;
+                    break;
+                case "Right":
+                    if(i==0)Snake.GameOver(body['x']+1,body['y']), Snake.eatMouse(body['x']+1,body['y']);
+                    body['x']++;
+                    break;
+                case "Down":
+                    if(i==0)Snake.GameOver(body['x'],body['y']+1), Snake.eatMouse(body['x'],body['y']+1);
+                    body['y']++;
+                    break;
+            }
+        
+        }
+        Snake.$("map_"+snakeArr[0]['x']+"_"+snakeArr[0]['y']).className  = "SnakeHead";
+    },
+    GameOver : function(x,y){   //游戏结束
+        if(x<0 || y<0 || x>this.mapX-1 || y>this.mapY-1){   //超出边界
+            clearInterval(this.timer);
+            return alert("GameOver");
+        }
+
+        for(var i in this.snakeArr){    //碰到身体
+            if(x==this.snakeArr[i]['x'] && y==this.snakeArr[i]['y']){
+                clearInterval(this.timer);
+                return alert("GameOver");
+            }
+        }
+    },
+    keyDirection : function(event){ //键盘控制方向
+        var event = event || window.event,
+            key = event.which || event.keyCode,
+            _snakeDirection = Snake.snakeDirection,
+            pointArr = Snake.pointArr,
+            pointNum = pointArr.length,
+            snakeArr = Snake.snakeArr,
+            bool = true;
+        switch(key){
+            case 37:
+                if(_snakeDirection=="Left"){
+                    bool = false;
+                }else{
+                    Snake.snakeDirection="Left"; 
+                }
+                break;
+            case 38: 
+                if(_snakeDirection=="Up"){
+                    bool = false;
+                }else{
+                    Snake.snakeDirection="Up"; 
+                }
+                break;
+            case 39: 
+                if(_snakeDirection=="Right"){
+                    bool = false;
+                }else{
+                    Snake.snakeDirection="Right"; 
+                }
+                break;
+            case 40: 
+                if(_snakeDirection=="Down"){
+                    bool = false;
+                }else{
+                    Snake.snakeDirection="Down"; 
+                }
+                break;
+        }
+        if(bool){
+            if(pointNum>0){
+                if(pointArr[pointNum-1]['x']!= snakeArr[0]['x'] || pointArr[pointNum-1]['y'] != snakeArr[0]['y']) Snake.CreatePoint();
+            }else{
+                Snake.CreatePoint();
+            }
+        }
+    },
+    CreatePoint : function(){   //创建转点
+        var pointArr = this.pointArr,
+            pointNum = pointArr.length;
+        pointArr[pointNum] = [];
+        pointArr[pointNum]['x'] = this.snakeArr[0]['x'];
+        pointArr[pointNum]['y'] = this.snakeArr[0]['y'];
+        pointArr[pointNum]['d'] = this.snakeDirection;
+    },
+    getPoint : function(x,y){
+        var _d = "",
+            pointArr = Snake.pointArr;
+        for(var i in pointArr){
+            if(x==pointArr[i]['x'] && y==pointArr[i]['y']){
+                _d = pointArr[i]['d'];
+            }
+        }
+        return _d;
+    },
+    delPoint : function(x,y){   //删除转点
+        var pointArr = Snake.pointArr;
+        if(x==pointArr[0]['x'] && y==pointArr[0]['y']){
+            var _a = Snake.snakeArr[Snake.snakeArr.length-2],
+                _b = Snake.snakeArr[Snake.snakeArr.length-1];
+            if(_a['x']==_b['x'] && _a['y']==_b['y']) _b['d']=_a['d'];
+            Snake.pointArr.shift();
+        }
+    },
+    eatMouse : function(x,y){
+        if(x==this.mousePos.x && y==this.mousePos.y){
+            var _x, _y,
+                _tail = this.snakeArr[this.snakeLen-1];
+            this.snakeArr[this.snakeLen]=[];
+            this.snakeArr[this.snakeLen]['x'] = _tail['x'];
+            this.snakeArr[this.snakeLen]['y'] = _tail['y'];
+            this.snakeArr[this.snakeLen]['d'] = _tail['d'];
+            this.snakeLen++;
+            this.speed-=5;
+            clearInterval(this.timer);
+            this.CreateMouse();
+            this.integral();
+            this.timer = setInterval(this.MoveSnake, this.speed);
+        }
+    },
+    integral : function(){
+        this.$("integral").innerHTML= Number(this.$("integral").innerHTML)+5;
+        this.$("speed").innerHTML=this.speed;
+    }
+}
+
+Snake.init();
+</script>
+</body>
+</html>
