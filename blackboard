@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>blackboard</title>
+	<style>
+		*{margin: 0;padding: 0;}
+		#wapper{margin:50px auto 0;display: block;}
+		#wapper:hover{cursor: pointer;}
+		.btn-list{width: 810px;margin: 5px auto;}
+		.btn{padding:5px 10px;margin-right: 10px;}
+	</style>
+</head>
+<body>
+
+
+<canvas id="wapper" width="800" height="400"></canvas>
+<!-- btn -->
+<div class="btn-list">chalkColor : <button class="btn" id="btn-white">white</button><button class="btn" id="btn-pink">pink</button><button class="btn" id="btn-green">green</button></div>
+<div class="btn-list">lineWidth : <button class="btn" id="btn-5">5</button><button class="btn" id="btn-10">10</button><button class="btn" id="btn-15">15</button></div>
+<div class="btn-list">clearAll : <button class="btn" id="btn-clearall">clearAll</button></div>
+<!-- btn end-->
+<script>
+
+var blackboard = {
+	color:'#fff',
+	lineWidth:5,
+	isDrawing:false,
+	x:0,
+	y:0,
+	init:function(){
+		this.wapper = document.getElementById('wapper');
+		this._2d = this.wapper.getContext('2d');
+		this.clear_blackboard();
+		this.init_font();
+		this.bind_btnEvent();
+	},
+	clear_blackboard:function(){
+		/*绘制背景颜色*/
+		this._2d.beginPath();
+	    this._2d.fillStyle = '#000';/*设置颜色*/
+	    this._2d.fillRect(0,0,800,600);/*fillRect(起点x，起点y，矩形长，矩形宽)*/
+	},
+	init_font:function(){
+		this._2d.beginPath();
+		this._2d.font='100px Arial';
+		this._2d.fillStyle = '#fff';
+		this._2d.textAlign = 'center';
+		this._2d.fillText('blackboard',400,200);/*strokeText(text,x,y,max width)*/
+	},
+	bind_btnEvent:function(){
+		var that = this;
+
+		that.wapper.onmouseout = function(e){
+			that.isDrawing = false;
+		}
+
+		that.wapper.onmousemove = function(e){
+			if(that.isDrawing){
+				that.drawing(e.offsetX, e.offsetY);
+				that.x = e.offsetX;
+				that.y = e.offsetY;
+			}
+		}
+
+		that.wapper.onmouseup = function(e){
+			that.isDrawing = false;
+			return false;
+		}
+
+		that.wapper.onmousedown = function(e){
+			that.x = e.offsetX;
+			that.y = e.offsetY;
+			that.isDrawing = true;
+			return false;
+		}
+
+		/*btn-clearall*/
+		document.getElementById('btn-clearall').onclick = function(){
+			that.clear_blackboard();
+		}
+
+		document.getElementById('btn-white').onclick = function(){
+			that.color = 'white';
+		}
+
+		document.getElementById('btn-pink').onclick = function(){
+			that.color = 'pink';
+		}
+
+		document.getElementById('btn-green').onclick = function(){
+			that.color = 'green';
+		}
+
+		document.getElementById('btn-5').onclick = function(){
+			that.lineWidth = 5;
+		}
+		
+		document.getElementById('btn-10').onclick = function(){
+			that.lineWidth = 10;
+		}
+
+		document.getElementById('btn-15').onclick = function(){
+			that.lineWidth = 15;
+		}
+	},
+	drawing:function(x,y){
+		this._2d.beginPath();/*创建新的路径*/
+		this._2d.lineWidth = this.lineWidth;/*设置线条宽度*/
+		this._2d.strokeStyle = this.color;/*设置线条颜色*/
+		this._2d.lineCap = 'round';/*向线条的每个末端添加圆形线帽。*/
+	    this._2d.moveTo(this.x, this.y);/*将画笔光标移动到画布坐标10，10*/
+	    this._2d.lineTo(x,y);/*画一条线*/
+	    this._2d.stroke();/*绘制定义的路径*/
+	}
+}
+blackboard.init();
+</script>
+</body>
+</html>
