@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>3D dice</title>
+	<style>
+	*{margin:0;padding:0;}
+	body{ -webkit-perspective: 500px;}
+
+	/*3d盒模型*/
+	#box{ -webkit-transform-style:preserve-3d;  -webkit-transform-origin:50% 50% 50px;-webkit-animation-fill-mode:forwards;margin:30px auto;width: 300px;height: 300px; position: relative;}
+	.box-play1{-webkit-animation:rotate1 1.3s linear 0 1;}
+	.box-play2{-webkit-animation:rotate2 1.3s linear 0 1;}
+	.box-play3{-webkit-animation:rotate3 1.3s linear 0 1;}
+	.box-play4{-webkit-animation:rotate4 1.3s linear 0 1;}
+	.box-play5{-webkit-animation:rotate5 1.3s linear 0 1;}
+	.box-play6{-webkit-animation:rotate6 1.3s linear 0 1;}
+	
+	/*骰子面*/
+	.layer{background-color: #fff;box-shadow:0 0 50px #ccc inset;width: 100px;height: 100px;position: absolute;color: #000;line-height: 100px;font-size: 50px;text-align: center;}
+	.layer:nth-of-type(1){top:100px;left:100px;}
+	.layer:nth-of-type(2){top:0px;left:100px;-webkit-transform:rotateX(-90deg); -webkit-transform-origin:bottom;}
+	.layer:nth-of-type(3){top:200px;left:100px; -webkit-transform:rotateX(90deg); -webkit-transform-origin:top;}
+	.layer:nth-of-type(4){top:100px;left:100px;-webkit-transform:translateZ(100px);}
+	.layer:nth-of-type(5){top:100px;left:0; -webkit-transform:rotateY(90deg); -webkit-transform-origin:right;}
+	.layer:nth-of-type(6){top:100px;left:200px; -webkit-transform:rotateY(-90deg); -webkit-transform-origin:left;}
+		@-webkit-keyframes rotate1{
+			/*1*/
+			100%   { -webkit-transform: rotateX(0deg) rotateY(-540deg) rotateZ(-180deg);}
+		}
+
+		@-webkit-keyframes rotate2{
+			/*2*/
+			100%   { -webkit-transform: rotateX(-450deg) rotateY(180deg) rotateZ(0deg);}
+		}
+
+		@-webkit-keyframes rotate3{
+			/*3*/
+			100%   { -webkit-transform: rotateX(450deg) rotateY(-180deg) rotateZ(0deg);}
+		}
+
+		@-webkit-keyframes rotate4{
+			/*4*/
+			100%   { -webkit-transform: rotateX(-360deg) rotateY(0deg) rotateZ(-90deg);}
+		}
+
+		@-webkit-keyframes rotate5{
+			/*5*/
+			100%   { -webkit-transform: rotateX(360deg) rotateY(90deg) rotateZ(360deg);}
+		}
+
+		@-webkit-keyframes rotate6{
+			/*6*/
+			100%   { -webkit-transform: rotateX(360deg) rotateY(-90deg) rotateZ(360deg);}
+		}
+
+
+	/*按钮*/
+	.btn-box{width: 300px;margin:0 auto;text-align: center;}
+	.btn-box button{width: 100px;height: 100px;font-size: 20px;margin:10px;}
+
+	/*说明*/
+	.txt{margin:0 auto;text-align: center;}
+	.txt strong{color: red;}
+	</style>
+
+</head>
+<body>
+	<!-- 3d骰子 -->
+	<div id="box">
+		<div class="layer">1</div>
+		<div class="layer">2</div>
+		<div class="layer">3</div>
+		<div class="layer">4</div>
+		<div class="layer">5</div>
+		<div class="layer">6</div>
+	</div>
+
+	<!-- 按钮  -->
+	<div class="btn-box">
+		<button class="btn-big" id="btn-big">压大</button>
+		<button class="btn-small" id="btn-small">压小</button>
+	</div>
+
+	<div class="txt">
+		<h1>《3D骰子》游戏说明：【4 5 6 为大】【3 为合】【1 2 为小】</h1>
+		<h2 id="fruit"></h2>
+	</div>
+	
+	
+
+	<script>
+
+	(function(window){
+		var dice = {
+			isPlay : false,/*是否在游戏*/
+			oldNumber : null,/*上一次结果*/
+			fruit : null,/*存放结果*/
+			time : 1300,/*动画运行时间*/
+			play:function(choose){
+				if(this.isPlay){return;}
+				document.getElementById('fruit').innerHTML = '开始游戏';
+				this.isPlay = true;
+				this.fruit = choose;
+
+				this.animate(this.getRandomNum());
+				
+			},
+			animate:function(number){
+				var that = this,
+					str = '', ending = '';
+
+				if(number>3 && this.fruit=='big'){
+					ending = '您赢了！';
+				}else if(number<3 && this.fruit=='small'){
+					ending = '您赢了！';
+				}else{
+					ending = '合局，庄家赢！';
+				}
+
+				str = '结果为：<strong>'+number+'点，您压的'+this.fruit+', '+ending+'</storng>';
+
+				document.getElementById('box').className = 'box-play'+number;
+
+				/*显示结果*/
+				setTimeout(function(){
+					document.getElementById('fruit').innerHTML = str;
+					that.isPlay = false;
+				},that.time);
+			},
+			/*获取随机数*/
+			getRandomNum:function(){
+				var n = parseInt(Math.random()*6)+1;
+				/*防止跟上次位置一样 进行重置*/
+				if(this.oldNumber == n){return this.getRandomNum();}
+				this.oldNumber = n
+				return n;
+			}
+		}
+
+		/*压大*/
+		document.getElementById('btn-big').onclick = function(){
+			dice.play('big');
+		}
+
+		/*压小*/
+		document.getElementById('btn-small').onclick = function(){
+			dice.play('small');
+		}
+
+
+	})(window);
+	</script>
+</body>
+</html>
