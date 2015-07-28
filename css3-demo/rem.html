@@ -26,7 +26,7 @@
             recalc = function () {
               var clientWidth = docEl.clientWidth;
               if (!clientWidth) return;
-              docEl.style.fontSize = (clientWidth / 320) + 'px';
+              docEl.style.fontSize = 10*(clientWidth / 320) + 'px';
             };
 
           if (!doc.addEventListener) return;
@@ -40,10 +40,9 @@
 
 	<style>
 		*{margin:0;padding:0;}
-		html,body{font-size: 1px;}
-		.box {padding:10rem;}
-		.box p{font-size:12rem;line-height: 20rem;}
-		.box a{display: block;line-height: 40rem;text-align: center;background-color: #2dcb54;color: #fff; font-size:16rem;margin-top:12rem;}
+		.box {padding:1rem;}
+		.box p{font-size:1.2rem;line-height: 2rem;}
+		.box a{display: block;line-height: 4rem;text-align: center;background-color: #2dcb54;color: #fff; font-size:1.6rem;margin-top:1.2rem;}
 	</style>
 
 
