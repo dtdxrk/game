@@ -7,18 +7,32 @@
 	<script>
 
 	(function(window) {
-	  var doc = document.documentElement,
-		  resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
-		  recalc = function () {
-		      var clientWidth = doc.clientWidth;
-		      if (!clientWidth) return;
-		      doc.style.fontSize = (clientWidth>768) ? 768 : clientWidth / 320 + 'px';		      	
-		  };
+	  // var doc = document.documentElement,
+		 //  resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+		 //  recalc = function () {
+		 //      var clientWidth = doc.clientWidth;
+		 //      if (!clientWidth) return;
+		 //      doc.style.fontSize = (clientWidth>768) ? 768 : clientWidth / 320 + 'px';		      	
+		 //  };
 	 
-	  if (!doc.addEventListener) return;
-	  window.addEventListener(resizeEvt, recalc, false);
-	  doc.addEventListener('DOMContentLoaded', recalc, false);
-	  recalc();
+	  // if (!doc.addEventListener) return;
+	  // window.addEventListener(resizeEvt, recalc, false);
+	  // doc.addEventListener('DOMContentLoaded', recalc, false);
+	  // recalc();
+
+	   (function (doc, win) {
+          var docEl = doc.documentElement,
+            resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+            recalc = function () {
+              var clientWidth = docEl.clientWidth;
+              if (!clientWidth) return;
+              docEl.style.fontSize = 20 * (clientWidth / 320) + 'px';
+            };
+
+          if (!doc.addEventListener) return;
+          win.addEventListener(resizeEvt, recalc, false);
+          doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
 	})(window);
 
 	</script>
