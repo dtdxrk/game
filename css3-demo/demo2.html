@@ -110,6 +110,9 @@ body{height: 2000px;background-color: green}
 	z-index:99999;
 }
 </style>
+
+<div style="background:red;height:500px;"></div>
+<div style="background:pink;height:500px;"></div>
 <div class="dropMask"></div>
 <div class="dragBtn"></div>
 <div class="dropBox">
@@ -212,8 +215,7 @@ body{height: 2000px;background-color: green}
 		}else{
 			posY = (posY<winH/2)?0:winH-50;
 		}
-		alert(posX)
-		alert(posY)
+
 		this.style.webkitTransition= '0.3s';
 		this.style.webkitTransform = 'translate('+posX+'px,+'+posY+'px)';
 
