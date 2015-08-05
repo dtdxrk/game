@@ -3,11 +3,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>小猪罐子微平台，7x24小时理财服务，赚钱不等下一秒！</title>
+<title>模仿c拖拽</title>
 <meta name="keywords" content="" />
 <meta name="description" content="" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<link rel="stylesheet" href="http://m.xiaozhu168.com/style/public.css?v=1.2">
 
 <!-- Piwik -->
 
@@ -15,6 +14,7 @@
 </head>
 <body>
 <style type="text/css">
+*{margin:0;padding:0;}
 .dragBtn {
 	background:url(images/dragBtn.png) center center no-repeat;
 	background-color:rgba(0,0,0,.7);
@@ -184,9 +184,9 @@
 	$(document).on("touchstart",function(e){
 	  e.preventDefault();
 	});
-	$(document).on("touchend",function(e){
-	  e.preventDefault();
-	});
+	// $(document).on("touchend",function(e){
+	//   e.preventDefault();
+	// });
 	$drag.on('touchstart',function(e){
 		var t = e.touches[0];
 
@@ -197,24 +197,20 @@
 		var t = e.touches[0];
 		posX = t.clientX-offsetX,
 		posY = t.clientY-offsetY;
-		
+		if(posX<0){posX=0;}
+		if(posY<0){posY=0;}
+
+		if(posX>winW-50){posX = winW-50;}
+		if(posY>winH-50){posY = winH-50;}		
 		this.style.webkitTransition= '0s';
 		this.style.webkitTransform = 'translate('+posX+'px,+'+posY+'px)';
 	}).on('touchend',function(e){
-		if(posX<100){
-			posX=0;
-		}else if(posX>winW-100){
-			posX=winW-50;
-		}else if(posY>winH/2){
-			posY=winH-50;
-		}else if(posY<winH/2){
-			posY=0;
+
+		if(posX<posY){
+			posX = (posX>winW/2)?winW-50:0;
+		}else{
+			posY = (posY>winH/2)?winH-50:0;
 		}
-
-		if(posY>winH-50){posY=winH-50;}
-
-		// posX = (posX>winX/2)?winX-60:10;
-		// posY = (posY>winY/2)?winY-60:10;
 
 		this.style.webkitTransition= '0.3s';
 		this.style.webkitTransform = 'translate('+posX+'px,+'+posY+'px)';
