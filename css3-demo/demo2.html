@@ -207,11 +207,12 @@
 	}).on('touchend',function(e){
 
 		if(posX<posY){
-			posX = (posX>winW/2)?winW-50:0;
+			posX = (posX<winW/2)?0:winW-50;
 		}else{
-			posY = (posY>winH/2)?winH-50:0;
+			posY = (posY<winH/2)?0:winH-50;
 		}
-
+		alert(posX)
+		alert(posY)
 		this.style.webkitTransition= '0.3s';
 		this.style.webkitTransform = 'translate('+posX+'px,+'+posY+'px)';
 
