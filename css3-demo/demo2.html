@@ -186,11 +186,12 @@
 	});
 
 	$drag.on('touchstart',function(e){
+		e.preventDefault();
 		var t = e.touches[0];
 
 		offsetX = t.clientX-posX,
 		offsetY = t.clientY-posY;
-
+		
 	}).on('touchmove',function(e){
 		var t = e.touches[0];
 		posX = t.clientX-offsetX,
@@ -199,6 +200,7 @@
 		this.style.webkitTransition= '0s';
 		this.style.webkitTransform = 'translate('+posX+'px,+'+posY+'px)';
 	}).on('touchend',function(e){
+		e.preventDefault();
 		if(posX<100){
 			posX=0;
 		}else if(posX>winW-100){
@@ -216,6 +218,7 @@
 
 		this.style.webkitTransition= '0.3s';
 		this.style.webkitTransform = 'translate('+posX+'px,+'+posY+'px)';
+
 	});
 	// $drag.draggable({
 	// 	cursor:'auto',
