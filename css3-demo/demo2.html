@@ -1,0 +1,265 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>小猪罐子微平台，7x24小时理财服务，赚钱不等下一秒！</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="stylesheet" href="http://m.xiaozhu168.com/style/public.css?v=1.2">
+
+<!-- Piwik -->
+
+<!-- End Piwik Code -->
+</head>
+<body>
+<style type="text/css">
+.dragBtn {
+	background:url(images/dragBtn.png) center center no-repeat;
+	background-color:rgba(0,0,0,.7);
+	background-size:41px;
+	border-radius:10px;
+	width:50px;
+	height:50px;
+	position:fixed;
+	left:0;
+	top:0;
+	z-index:88888;
+	
+}
+.dropBox {
+	display:none;
+	width:300px;
+	height:300px;
+	position:fixed;
+	z-index:100000;
+}
+.dropSkin {
+	background-color:rgba(0,0,0,.7);
+	border-radius:10px;
+	position:absolute;
+	width:100%;
+	height:100%;
+}
+.dropList {
+	display:none;
+}
+.dropList li {
+	position:absolute;
+	width:51px;
+}
+.dropList li p {
+	font-size:14px;
+	color:white;
+	text-align:center;
+	width:81px;
+	margin:0 0 0 -15px;
+}
+.dropIco {
+	display:block;
+	width:51px;
+	height:51px;
+	border-radius:25.5px;
+	overflow:hidden;
+	background-image:url(images/dropIco.png);
+	background-repeat:no-repeat;
+	background-size:auto 51px;
+}
+.dropList li.nth-child_1 {
+	left:65px;
+	top:204px;
+}
+.dropList li.nth-child_2 {
+	left:30px;
+	top:101px;
+}
+.dropList li.nth-child_3 {
+	left:121px;
+	top:25px;
+}
+.dropList li.nth-child_4 {
+	left:218px;
+	top:101px;
+}
+.dropList li.nth-child_5 {
+	left:179px;
+	top:203px;
+}
+.dropList li.nth-child_1 .dropIco {
+	background-position:0px 0px;
+}
+.dropList li.nth-child_2 .dropIco {
+	background-position:-51px 0px;
+}
+.dropList li.nth-child_3 .dropIco {
+	background-position:-102px 0px;
+}
+.dropList li.nth-child_4 .dropIco {
+	background-position:-153px 0px;
+}
+.dropList li.nth-child_5 .dropIco {
+	background-position:-204px 0px;
+}
+.dropMask {
+	display:none;
+	position:fixed;
+	width:100%;
+	height:100%;
+	z-index:99999;
+}
+</style>
+<div class="dropMask"></div>
+<div class="dragBtn"></div>
+<div class="dropBox">
+    <div class="dropSkin"></div>
+	<ul class="dropList">
+		<li class="nth-child_1">
+			<a href="http://m.xiaozhu168.com/" class="dropIco"></a>
+			<p>首页</p>
+		</li>
+		<li class="nth-child_2">
+			<a href="http://m.xiaozhu168.com/invest" class="dropIco"></a>
+			<p>投资</p>
+		</li>
+		<li class="nth-child_3">
+			<a href="http://m.xiaozhu168.com/home" class="dropIco"></a>
+			<p>个人中心</p>
+		</li>
+		<li class="nth-child_4">
+			<a href="http://m.xiaozhu168.com/aboutus" class="dropIco"></a>
+			<p>关于我们</p>
+		</li>
+		<li class="nth-child_5">
+			<a href="http://m.xiaozhu168.com/activity" class="dropIco"></a>
+			<p>活动专区</p>
+		</li>
+	</ul>
+</div>
+<script src="http://static.xgo-img.com.cn/mtouch/js/buy/zepto.min.js"></script>
+<script type="text/javascript">
+(function(window){
+	var $drag = $('.dragBtn'),
+		$drop = $('.dropBox'),
+		$mask = $('.dropMask'),
+		speed = 300,
+		state = false,
+		iniX,iniY,posX,posY,
+		winW = $(window).width(),
+		winH = $(window).height();
+	$(window).resize(function(){
+		winW = $(window).width();
+		winH = $(window).height();
+	});
+	var onClick = function(obj){
+		switch(obj){
+			case 'on':
+				$drag.hide();
+				$drop.css({'width':50,'height':50,'right':'auto','left':posX,'top':posY}).show().animate({width:300,height:300,left:winX/2-150,top:winY/2-150},speed,function(){state = true;$drop.find('.dropList').show();$mask.show()}) 
+			break;
+			case 'off':
+				state = false;
+				$drop.find('.dropList').hide()
+				$mask.hide();
+				$drop.css('right','auto').animate({width:50,height:50,left:posX,top:posY},speed,function(){$drop.hide();$drag.show();}) 
+			break;
+		}
+	};
+	// $('.dropBox,.dragBtn,.dropMask').on('touchmove',
+	// function(e) {
+	// 	e.stopPropagation();
+	// 	e.preventDefault();
+	// });
+	// $drop.find('.dropSkin').on('touchend',function(){
+	// 	if(state)onClick('off');
+	// }); 	
+	// $mask.on('touchend',function(){
+	// 	if(state)onClick('off');
+	// }); 
+
+	/*按钮拖拽*/
+	var offsetX=0,offsetY=0,//点击到元素里的位置
+		posX=0,posY=0;
+
+	$(document).on("touchstart",function(e){
+	  e.preventDefault();
+	});
+
+	$drag.on('touchstart',function(e){
+		var t = e.touches[0];
+
+		offsetX = t.clientX-posX,
+		offsetY = t.clientY-posY;
+
+	}).on('touchmove',function(e){
+		var t = e.touches[0];
+		posX = t.clientX-offsetX,
+		posY = t.clientY-offsetY;
+		
+		this.style.webkitTransition= '0s';
+		this.style.webkitTransform = 'translate('+posX+'px,+'+posY+'px)';
+	}).on('touchend',function(e){
+		if(posX<100){
+			posX=0;
+		}else if(posX>winW-100){
+			posX=winW-50;
+		}else if(posY>winH/2){
+			posY=winH-50;
+		}else if(posY<winH/2){
+			posY=0;
+		}
+
+		if(posY>winH-50){posY=winH-50;}
+
+		// posX = (posX>winX/2)?winX-60:10;
+		// posY = (posY>winY/2)?winY-60:10;
+
+		this.style.webkitTransition= '0.3s';
+		this.style.webkitTransform = 'translate('+posX+'px,+'+posY+'px)';
+	});
+	// $drag.draggable({
+	// 	cursor:'auto',
+	// 	onStartDrag:function(){
+	// 		$drag.css('right','auto');
+	// 		iniX = $(this).offset().left;
+	// 		iniY = $(this).offset().top;
+	// 	},
+	// 	onDrag:function(e){
+	// 		var d = e.data;
+	// 		if (d.left < 0){d.left = 0}
+	// 		if (d.top < 0){d.top = 0}
+	// 		if (d.left + $(d.target).outerWidth() > winX){
+	// 			d.left = winX - $(d.target).outerWidth();
+	// 		}
+	// 		if (d.top + $(d.target).outerHeight() > winY){
+	// 			d.top = winY - $(d.target).outerHeight();
+	// 		}
+	// 		posX = $(this).offset().left;
+	// 		posY = $(this).offset().top;
+	// 	},
+	// 	onStopDrag:function(){
+	// 		$drag.css('position','fixed')
+	// 		var x = posX < winX/2 ? posX : winX - posX - $drag.width();
+	// 		var y = posY < winY/2 ? posY : winY - posY - $drag.height();
+	// 		if(x < y){
+	// 			if(posX < winX/2){
+	// 				$drag.animate({left:0},speed);
+	// 			}else{
+	// 				$drag.animate({left:winX - $drag.width()},speed);
+	// 			}
+	// 		}else{
+	// 			if(posY < winY/2){
+	// 				$drag.animate({top:0},speed);
+	// 			}else{
+	// 				$drag.animate({top:winY - $drag.height()},speed);
+	// 			}
+	// 		}
+	// 		if(posX == iniX && posY == iniY){
+	// 			onClick('on');
+	// 		}
+	// 	}
+	// });
+})(window);
+</script>
+</body>
+</html>
