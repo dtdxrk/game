@@ -45,19 +45,20 @@ body{height: 2000px;}
 	display: none;
 }
 .dragc-pop {
-	width:50px;
-	height:50px;
+	width:240px;
+	height:240px;
 	overflow: hidden;
 	position:fixed;
-	top:0;
-	left:0;
+	top:50%;
+	left:50%;
 	z-index:88880;
 	-webkit-transition:0.2s ease;
 	background-color:rgba(0,0,0,.7);
 	border-radius:10px;
-	width: 50px;
-	height: 50px;
-	display: none;
+	margin:-120px 0 0 -120px;
+	opacity: 0;
+	/*scale*/
+	-webkit-transform : scale(0);
 }
 .dragc-pop .link{
 	position: absolute;
@@ -147,7 +148,7 @@ body{height: 2000px;}
 		$dragPop = $('.dragc-pop'),
 		isOpen = false,
 		offsetX = 0, offsetY = 0,//点击到元素里的位置
-		posX = $dragBtn.offset().left, posY=$dragBtn.offset().top,/*btn移动到的坐标*/
+		posX = 0, posY=0,/*btn移动到的坐标*/
 		winW = $(window).width(),
 		winH = $(window).height();
 
@@ -165,11 +166,8 @@ body{height: 2000px;}
 				$dragPop.show();
 				setTimeout(function(){
 					$dragPop.css({
-						'-webkit-transform' : 'translate(-50%,-50%)',
-						'width' : '240px',
-						'height' : '240px',
-						'top' : '50%',
-						'left' : '50%'
+						'-webkit-transform' : 'scale(1)',
+						'opacity': 1
 					});					
 				},40);
 
@@ -179,24 +177,16 @@ body{height: 2000px;}
 				$dragMask.hide();
 
 				$dragPop.css({
-					'-webkit-transform' : 'translate('+posX+'px,+'+posY+'px)',
-					'width' : '50px',
-					'height' : '50px',
-					'top' : '0',
-					'left' : '0'
-				})
+					'-webkit-transform' : 'scale(0)',
+					'opacity': 0
+				});
+				
+				$dragBtn.show();
 				
 			break;
 		}
 	};
 
-	/*监听弹窗动画完的事件*/
-	$dragPop.on('webkitTransitionEnd',function(){
-		if(!isOpen){
-			$dragBtn.show();
-			$dragPop.hide();
-		}
-	});
 
 	/*关闭弹层*/
 	$dragMask.on('click',function(){
@@ -239,9 +229,9 @@ body{height: 2000px;}
 			'-webkit-transform' : 'translate('+posX+'px,+'+posY+'px)'
 		})
 
-		$dragPop.css({
-			'-webkit-transform' : 'translate('+posX+'px,+'+posY+'px)'
-		});
+		// $dragPop.css({
+		// 	'-webkit-transform' : 'translate('+posX+'px,+'+posY+'px)'
+		// });
 
 	}).click(function(){
 		onClick('open');
@@ -254,11 +244,6 @@ body{height: 2000px;}
 	$dragBtn.css({
 		'-webkit-transform' : 'translate('+posX+'px,+'+posY+'px)'
 	}).show();
-
-	$dragPop.css({
-		'-webkit-transform' : 'translate('+posX+'px,+'+posY+'px)'
-	});
-
 
 })();
 </script>
