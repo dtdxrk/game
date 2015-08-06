@@ -32,7 +32,7 @@ body{height: 2000px;}
 	border:2px solid #fff;
 	display: block;
 	-webkit-box-shadow:0 3px 3px rgba(0, 0, 0, .5);
-	box-sizing: border-box;
+	/*box-sizing: border-box;*/
 }
 
 .dragc-mask{
@@ -78,7 +78,7 @@ body{height: 2000px;}
 	display: block;
 	-webkit-box-shadow:0 3px 3px rgba(0, 0, 0, .5);
 	margin-bottom: 5px;
-	box-sizing: border-box;
+	/*box-sizing: border-box;*/
 }
 .dragc-pop .link:nth-child(1){
 	top:15px;
@@ -152,10 +152,11 @@ body{height: 2000px;}
 		winW = $(window).width(),
 		winH = $(window).height();
 
-	// $(window).resize(function(){
-	// 	winW = $(window).width();
-	// 	winH = $(window).height();
-	// });
+	$(window).resize(function(){
+		winW = $(window).width();
+		winH = $(window).height();
+		init();
+	});
 
 	var onClick = function(state){
 		switch(state){
@@ -180,7 +181,7 @@ body{height: 2000px;}
 					'-webkit-transform' : 'scale(0)',
 					'opacity': 0
 				});
-				
+
 				$dragBtn.show();
 				
 			break;
@@ -189,7 +190,7 @@ body{height: 2000px;}
 
 
 	/*关闭弹层*/
-	$dragMask.on('click',function(){
+	$dragMask.on('touchend',function(){
 		onClick('close');
 	}); 
 
@@ -219,9 +220,9 @@ body{height: 2000px;}
 	}).on('touchend',function(e){
 		/*iphone 微信左侧拉btn会触发浏览器默认事件*/
 		if(posX<posY/* && !(navigator.userAgent.indexOf('iPhone')>-1)*/){
-			posX = (posX<winW/2) ? 10 : winW-60;
+			posX = (posX<winW/2) ? winW-50 : winW-50;
 		}else{
-			posY = (posY<winH/2) ? 10 : winH-60;
+			posY = (posY<winH/2) ? 0 : winH-50;
 		}
 
 		$(this).css({
@@ -229,21 +230,22 @@ body{height: 2000px;}
 			'-webkit-transform' : 'translate('+posX+'px,+'+posY+'px)'
 		})
 
-		// $dragPop.css({
-		// 	'-webkit-transform' : 'translate('+posX+'px,+'+posY+'px)'
-		// });
-
 	}).click(function(){
 		onClick('open');
 		return false;
 	});
 
 	/*init*/
-	posX=winW-60;
-	posY=winH-60;
-	$dragBtn.css({
-		'-webkit-transform' : 'translate('+posX+'px,+'+posY+'px)'
-	}).show();
+	function init(){
+		onClick('close');
+		posX=winW-60;
+		posY=winH-60;
+		$dragBtn.css({
+			'-webkit-transform' : 'translate('+posX+'px,+'+posY+'px)'
+		}).show();	
+	}
+
+	init();
 
 })();
 </script>
