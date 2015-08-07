@@ -124,10 +124,10 @@ var dragmenu = {
 					// 'top:50%;'+
 					// 'left:50%;'+
 					'z-index:88880;'+
-					'-webkit-transition:0.2s ease;'+
 					'background-color:rgba(0,0,0,.7);'+
 					'border-radius:10px;'+
-					// 'margin:-120px 0 0 -120px;'+
+					'display:none;'+
+					'-webkit-transition:0.2s ease;'+
 				'}'+
 				'.dragc-pop .link{'+
 					'position: absolute;'+
@@ -138,6 +138,7 @@ var dragmenu = {
 					'font-size: 12px;'+
 					'color: #fff;'+
 					'text-decoration: none;'+
+					'display:none;'+
 				'}'+
 				'.dragc-pop .link:before{'+
 					'content: "";'+
@@ -216,6 +217,7 @@ var dragmenu = {
 			var $dragBtn = $('.dragc-btn'),
 				$dragMask = $('.dragc-mask'),
 				$dragPop = $('.dragc-pop'),
+				$links = $dragPop.find('.link'),
 				isOpen = false,
 				offsetX = 0, offsetY = 0,//点击到元素里的位置
 				posX = 0, posY = 0,/*btn移动到的坐标*/
@@ -230,31 +232,31 @@ var dragmenu = {
 						$dragMask.show();
 						$dragPop.show();
 						setTimeout(function(){
-							$dragPop.css({
+							$dragPop.css({		
 								'width':'240px',
 								'height':'240px',
 								'left': '50%',
 								'top' :'50%',
 								'margin':'-120px 0 0 -120px'
-								// '-webkit-transform' : 'translate(50%,50%)'
 							});
-						},40);
+							$links.show();
+						},50);
 
 					break;
 					case 'close':
 						isOpen = false;
 						$dragMask.hide();
-
+						$links.hide();
 						$dragPop.css({
 							'left': posX,
 							'top' :posY,
 							'width':'50px',
 							'height':'50px',
-							'margin':'0'
+							'margin':'0',
 						});
 						setTimeout(function(){
-							$dragBtn.show();
 							$dragPop.hide();
+							$dragBtn.show();
 						},200);
 						
 					break;
@@ -294,11 +296,7 @@ var dragmenu = {
 					'-webkit-transition': '0s',
 					'-webkit-transform' : 'translate('+posX+'px,+'+posY+'px)'
 				});
-				$dragPop.css({
-					'left':posX,
-					'top':posY
-					// '-webkit-transform' : 'translate('+posX+'px,+'+posY+'px)',
-				});
+
 
 			}).on('touchend',function(e){
 
@@ -316,6 +314,10 @@ var dragmenu = {
 					'-webkit-transition': '0.3s',
 					'-webkit-transform' : 'translate('+posX+'px,+'+posY+'px)'
 				});
+				$dragPop.css({
+					'left':posX,
+					'top':posY
+				});
 
 			}).click(function(e){
 				onClick('open');
@@ -329,10 +331,8 @@ var dragmenu = {
 				'display':'block'
 			});
 			$dragPop.css({
-				// '-webkit-transform' : 'translate('+posX+'px,+'+posY+'px)',
 				'left':posX,
-				'top':posY,
-				'display':'none'
+				'top':posY
 			});
 		}
 }
